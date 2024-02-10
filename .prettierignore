@@ -1,0 +1,40 @@
+# Ignore hidden files
+.*
+
+# Ignore build and distribution directories
+dist/
+build/
+out/
+public/
+
+# Ignore vendor directories
+node_modules/
+bower_components/
+
+# Ignore binary files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.ico
+*.svg
+*.ttf
+*.woff
+*.woff2
+*.eot
+*.pdf
+
+# Ignore generated files
+*.min.js
+*.min.css
+
+# Ignore log files
+*.log
+
+/.vscode
+/node_modules
+./dist
+
+*.env
+.env
+.env.*

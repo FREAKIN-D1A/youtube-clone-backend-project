@@ -1,0 +1,29 @@
+{
+  "name": "youtube-clone-backend-self",
+  "version": "1.0.0",
+  "description": "My project that will go into my portfolio",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/FREAKIN-D1A/youtube-clone-backend-project.git"
+  },
+  "keywords": [
+    "Javascript",
+    "mongodb"
+  ],
+  "author": "Dewan Mohammad Asad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FREAKIN-D1A/youtube-clone-backend-project/issues"
+  },
+  "homepage": "https://github.com/FREAKIN-D1A/youtube-clone-backend-project#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.5"
+  }
+}
