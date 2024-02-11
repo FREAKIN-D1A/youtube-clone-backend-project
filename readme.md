@@ -22,10 +22,13 @@ inside server.js >
 import dotenv from "dotenv";  
 dotenv.config({ path: "./.env" });
 
-inside .env >  
- "scripts": {  
+inside .env >
+
+```
+ "scripts": {
  "dev": "nodemon -r dotenv/config --experimental-json-modules --experimental-specifier-resolution=node src/server.js"
 },
+```
 
 ##### connectDB:
 
@@ -36,8 +39,11 @@ const connectionInstance = await mongoose.connect(process.env.MONGODB_URI);
 you can console log connectionInstance.connection.host to show the connection instance host.
 
 inside server.js >
-import connectDB from "./db/index.js";  
+
+```
+import connectDB from "./db/index.js";
 connectDB()
+```
 
 since connectDB() is an async function, the function will be returning a promise as well.  
 So, we can use a .then() method and a .catch() method for this connectDB()
@@ -64,71 +70,87 @@ To have all the error in one coherent syntax
 
 ##### Setting Up apiResponse.js:
 
-    class ApiResponse {
-    constructor(statusCode, data, message = "success") {
-    this.statusCode = statusCode;
-    this.data = data;
-    this.message = message;
-    this.success = statusCode < 400;
-    }
-    }
+```
+class ApiResponse {
+ constructor(statusCode, data, message = "success") {
+ this.statusCode = statusCode;
+ this.data = data;
+ this.message = message;
+ this.success = statusCode < 400;
+ }
+ }
 
-    export { ApiResponse };
+ export { ApiResponse };
+```
 
 ### Create Models:
 
 #### Create video.model.js:
 
-    videoFile
-    thumbnail
-    title
-    description
-    duration
-    views
-    ifPublished
-    owner: {
-    type: Schema.Types.ObjectId, // cloud
-    ref: "User",
-    },
+```
+  videoFile
+  thumbnail
+  title
+  description
+  duration
+  views
+  ifPublished
+  owner: {
+  type: Schema.Types.ObjectId, // cloud
+  ref: "User",
+  },
+```
 
-    videoSchema.plugin(mongooseAggregatePaginate);
+```
+videoSchema.plugin(mongooseAggregatePaginate);
+```
 
 this allows us to use aggregation queries.
 
 #### Create user.model.js:
 
-    username
-    email
-    fullName
-    avatar
-    coverImage
-    watchHistory: [{ type: Schema.Types.ObjectId, ref: "Video" }],
-    password: { type: String, required: [true, "Password is required"] },
-    refreshToken: { type: String },
+```
+ username
+ email
+ fullName
+ avatar
+ coverImage
+ watchHistory: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+ password: { type: String, required: [true, "Password is required"] },
+ refreshToken: { type: String },
+```
 
 We are not storing accessToken here.
 
 <!-- userSchema.pre hooks works right before it saves the schema -->
 
+```
     userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 10);
     next();
     });
+```
 
 <!--
 this syntax adds custom methods to the schema
  -->
 
+```
+
     userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
-    }; <!-- this will be used in the controllers.-->
+    };
+```
+
+    <!-- this will be used in the controllers.-->
 
 write userSchema.methods.generateAccessToken with jwt.sign({user payload},token_secret, token_expiry)
 write userSchema.methods.generateRefreshToken the same way jwt.sign({ \_id: this.\_id,},token_secret, token_expiry)
 
 #### using cloudinary for fileupload : src/utils/clouninary.js:
 
+    ```
     import { v2 as cloudinary } from "cloudinary";
     import fs from "fs";
 
@@ -160,11 +182,13 @@ write userSchema.methods.generateRefreshToken the same way jwt.sign({ \_id: this
     };
 
     export { uploadOnCloudinary };
+    ```
 
 #### using multer for fileupload : src/middlewares/multer.middleware.js:
 
 we will write a middleware.
 
+```
     import multer from "multer";
     const { v4: uuidv4 } = require("uuid");
     const path = require("path");
@@ -183,5 +207,6 @@ we will write a middleware.
     export const upload = multer({
     storage,
     });
+```
 
 ### Setup Done. the next part starts here.:
