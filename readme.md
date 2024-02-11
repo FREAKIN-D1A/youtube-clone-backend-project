@@ -73,7 +73,7 @@ this.success = statusCode < 400;
 
 export { ApiResponse };
 
-## Create Models:
+### Create Models:
 
 #### Create video.model.js:
 
@@ -122,3 +122,62 @@ return await bcrypt.compare(password, this.password);
 
 write userSchema.methods.generateAccessToken with jwt.sign({user payload},token_secret, token_expiry)
 write userSchema.methods.generateRefreshToken the same way jwt.sign({ \_id: this.\_id,},token_secret, token_expiry)
+
+#### using cloudinary for fileupload : src/utils/clouninary.js:
+
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+
+cloudinary.config({
+cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+api_key: process.env.CLOUDINARY_API_KEY,
+api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadOnCloudinary = async (localFilePath) => {
+try {
+if (!localFilePath) return null;
+//upload the file on cloudinary
+const response = await cloudinary.uploader.upload(localFilePath, {
+resource_type: "auto",
+});
+
+    // file has been uploaded successfull
+    console.log("file is uploaded on cloudinary ", response.url);
+    fs.unlinkSync(localFilePath);
+
+    return response;
+
+} catch (error) {
+fs.unlinkSync(localFilePath);
+// remove the locally saved temporary file as the upload operation got failed
+return null;
+}
+};
+
+export { uploadOnCloudinary };
+
+#### using multer for fileupload : src/middlewares/multer.middleware.js:
+
+we will write a middleware.
+
+import multer from "multer";
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
+
+const storage = multer.diskStorage({
+destination: function (req, file, cb) {
+cb(null, "./public/temp");
+},
+filename: function (req, file, cb) {
+const uniqueName = uuidv4().toString() + path.extname(file.originalname);
+cb(null, uniqueName);
+// cb(null, file.originalname);
+},
+});
+
+export const upload = multer({
+storage,
+});
+
+### Setup Done. the next part starts here.:
